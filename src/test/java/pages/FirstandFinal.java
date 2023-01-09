@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -20,22 +22,26 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import utility.BrowserUtil;
 import utility.ConfigDataProvider;
 import com.aventstack.extentreports.reporter.ExtentReporter;
+import org.apache.logging.log4j.Logger;
+//import freemarker.log.Logger;
+
 import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.markuputils.Markup;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 
 public class FirstandFinal {
 	public static WebDriver driver;
 	ConfigDataProvider CDP=new ConfigDataProvider();
-	public ExtentTest log;
+	public ExtentTest test;
 	public ExtentReports report;
 	public ExtentReporter reporter;
 	public ExtentHtmlReporter htmlreport;
-
-	/*
-	 * public void beforeSuite() { reporter=new ExtentSparkReporter(new
-	 * File("./Reports/PC.html")); report=new ExtentReports();
-	 * report.attachReporter(reporter); }
-	 */
+	public HolidaysListPage HLP;
+   public static Logger logs;
+   String[][] publicHoliday;
+   String[][] optionalHoliday;
+   
 	public void setUp() {
 
 			htmlreport=new ExtentHtmlReporter(new File("./Reports/PChtml"+getCurrentDateTime()+".html"));
@@ -89,31 +95,66 @@ public class FirstandFinal {
 	public void sparkReportPass(String methodName) {
 		//ExtentSparkReporter reporter=new ExtentSparkReporter(new File("./Reports/PC"+getCurrentDateTime()+".html"));
 		
-		log=report.createTest(methodName);
-		
+		test=report.createTest(methodName);
+		logs=LogManager.getLogger();
 		String filename=capturescreenshot(driver);
 		System.out.println("captured Screenshot name"+filename);
-		log.log(Status.INFO,"Action Performed"+methodName);
-		log.log(Status.PASS, "The expected Action "+methodName+"is performed Successfully");
+		test.log(Status.INFO,"Action Performed"+methodName);
+		test.log(Status.PASS, "The expected Action "+methodName+"is performed Successfully");
 		//log.info(MediaEntityBuilder.createScreenCaptureFromPath(filename).build());
-		log.addScreenCaptureFromPath("./Screenshots/");
+		test.addScreenCaptureFromPath("./Screenshots/"+filename);
+		//Logger.LIBRARY_NAME_LOG4J.length();
+		logs.info(methodName+"Logger event");
 		report.flush();
 		
 	}
+	public void reportInfo(String methodName) {
+		//ExtentSparkReporter reporter=new ExtentSparkReporter(new File("./Reports/PC"+getCurrentDateTime()+".html"));
+		
+		test=report.createTest(methodName);
+		logs=LogManager.getLogger();
+		String filename=capturescreenshot(driver);
+		//System.out.println("captured Screenshot name"+filename);
+		test.generateLog(Status.INFO,"Action Performed"+methodName);
+		test.log(Status.PASS, "The expected Action "+methodName+"is performed Successfully");
+		//log.info(MediaEntityBuilder.createScreenCaptureFromPath(filename).build());
+		test.addScreenCaptureFromPath("./Screenshots/"+filename);
+		//Logger.LIBRARY_NAME_LOG4J.length();
+		logs.info(methodName+"Logger event");
+		report.flush();
+		
+	}
+	@SuppressWarnings("unchecked")
+	
 
 public void sparkReportFailure(String methodName) {
 	//ExtentSparkReporter reporter=new ExtentSparkReporter(new File("./Reports/PC"+getCurrentDateTime()+".html"));
 	//ExtentReports report=new ExtentReports();
-	 log=report.createTest(methodName);
+	 test=report.createTest(methodName);
+	 logs=LogManager.getLogger();
 	//report.attachReporter(htmlreport);
 	String filename=capturescreenshot(driver);
-	log.log(Status.INFO, "Action Performed"+methodName);
-	log.log(Status.FAIL, "The expected Action "+methodName+"is  not performed");
-	log.addScreenCaptureFromPath("./Screenshots/"+filename);
+	test.log(Status.INFO, "Action Performed"+methodName);
+	test.log(Status.FAIL, "The expected Action "+methodName+"is  not performed");
+	test.addScreenCaptureFromPath("./Screenshots/"+filename);
+	logs.error(methodName+"Logger event");
 	report.flush();
 	
 }
-	
+	public void helper() {	
+		test=report.createTest("Public Holiday List");
+		publicHoliday=HolidaysListPage.publicholiday();
+		System.out.println("Public HolidayList from Helper file"+publicHoliday);
+		//optionalHoliday=HolidaysListPage.optionalholiday();
+		//System.out.println("optional HolidayList from Helper file"+optionalHoliday);
+		Markup m = MarkupHelper.createTable( publicHoliday);
+		test.pass(m);
+		test=report.createTest("Optional Holiday List");
+		//this.publicHoliday=publicHoliday;
+		//this.optionalHoliday=optionalHoliday;
+		//Markup m1 = MarkupHelper.createTable( optionalHoliday);
+		//test.pass(m1);
+	}
 	 
 
 }

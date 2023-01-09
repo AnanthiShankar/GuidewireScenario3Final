@@ -1,16 +1,17 @@
 package pages;
 
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-
-import OverrideFunctions.WebElements;
+import OverrideFunctions.WebElementActions;
 import utility.ExcelDataProvider;
 
 public class HomePage extends FirstandFinal{
 	
 	ExcelDataProvider EDP=new ExcelDataProvider();
-	WebElements elements=new WebElements(driver);
+	WebElementActions elements=new WebElementActions(driver);
 	public HomePage(WebDriver driver) {
 		FirstandFinal.driver=driver;
 		
@@ -27,30 +28,31 @@ public class HomePage extends FirstandFinal{
 	 
 	
 			//Method to send the button name and click 
-			public void clickButton(String buttonToClick) throws InterruptedException {
+			public boolean clickButton(String buttonToClick) throws InterruptedException {
 				
 				
 				if (buttonToClick.equalsIgnoreCase("Home")) {
-				elements.clickButton(buttonToClick, HomeLink);
+				elements.clickButton( HomeLink);
 				}
 				else if (buttonToClick.equalsIgnoreCase("HolidaysList")) {
-					elements.clickButton(buttonToClick, HolidayImage);
+					elements.clickButton( HolidayImage);
 					//System.out.println("xpath for holidayimage"+HolidayImage);
 				}
 				else if (buttonToClick.equalsIgnoreCase("Chart")) {
-					elements.clickButton(buttonToClick, ChartImage);
+					elements.clickButton( ChartImage);
 				}
 				else if (buttonToClick.equalsIgnoreCase("Snapshot")) {
-					elements.clickButton(buttonToClick, SnapShotImage);
+					elements.clickButton( SnapShotImage);
 				}
 				else if (buttonToClick.equalsIgnoreCase("gTE")) {
-					elements.clickButton(buttonToClick, gTEimage);
+					elements.clickButton( gTEimage);
 				}
 				else if (buttonToClick.equalsIgnoreCase("Conflict")) {
-					elements.clickButton(buttonToClick, ConflictImage);
+					elements.clickButton( ConflictImage);
 				}
-				Thread.sleep(10000);
-				//return boolean;
+				//Thread.sleep(10000);
+				driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+				return true;
 			 }
 			
 			}

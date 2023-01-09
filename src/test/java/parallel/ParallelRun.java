@@ -7,7 +7,7 @@ import io.cucumber.testng.CucumberOptions;
 @CucumberOptions(
 		features="Features",
 		glue={"StepDefinitions"})
-		//plugin={"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"})
+		
 		
 public class ParallelRun extends AbstractTestNGCucumberTests {
 		 
